@@ -1,0 +1,398 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Momentum — Scratch Mod</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f0f2f5;
+  --surface: rgba(255,255,255,0.75);
+  --surface-strong: rgba(255,255,255,0.92);
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.13);
+  --text: #0f1117;
+  --text-2: #4a5060;
+  --text-3: #8890a0;
+  --green: #22c55e;
+  --green-text: #15803d;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --shadow-glass: 0 10px 30px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.3);
+  --shadow-soft: 0 8px 20px rgba(0,0,0,0.06);
+  --nav-bg: rgba(255,255,255,0.82);
+  --nav-border: rgba(0,0,0,0.08);
+  --tint1: rgba(139,92,246,0.07);
+  --tint2: rgba(99,102,241,0.05);
+}
+
+.dark {
+  --bg: #0e0f14;
+  --surface: rgba(255,255,255,0.05);
+  --surface-strong: rgba(255,255,255,0.09);
+  --border: rgba(255,255,255,0.09);
+  --border-strong: rgba(255,255,255,0.15);
+  --text: #f0f2f8;
+  --text-2: #9aa0b8;
+  --text-3: #565d78;
+  --green-text: #4ade80;
+  --shadow-glass: 0 10px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.07);
+  --shadow-soft: 0 8px 20px rgba(0,0,0,0.3);
+  --nav-bg: rgba(14,15,20,0.88);
+  --nav-border: rgba(255,255,255,0.08);
+  --tint1: rgba(139,92,246,0.1);
+  --tint2: rgba(99,102,241,0.07);
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 60% 40% at 50% -10%, var(--tint1) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 85% 90%, var(--tint2) 0%, transparent 60%);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  padding-top: 4.5rem;
+  padding-bottom: 5rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  transition: background 300ms ease, color 300ms ease;
+}
+
+/* NAVBAR */
+.site-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--nav-border);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+  transition: background 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+}
+.dark .site-nav { box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.nav-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  position: relative;
+}
+.nav-inner::before {
+  content: '';
+  position: absolute;
+  top: -8px; left: 50%; transform: translateX(-50%);
+  width: 300px; height: 50px;
+  background: radial-gradient(ellipse, rgba(139,92,246,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.nav-brand-wrap { display: flex; align-items: center; gap: 0.65rem; }
+.nav-brand-icon {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1, #4f46e5);
+  box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.nav-brand-icon svg { width: 15px; height: 15px; stroke: white; stroke-width: 1.75; fill: none; }
+.nav-brand-text { font-weight: 600; font-size: 0.92rem; color: var(--text); }
+.nav-right { display: flex; align-items: center; gap: 0.5rem; }
+.dark-toggle {
+  width: 36px; height: 36px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 150ms ease, transform 150ms ease;
+  flex-shrink: 0;
+}
+.dark-toggle:hover { background: var(--surface-strong); transform: scale(1.06); }
+.dark-toggle svg { width: 15px; height: 15px; stroke: var(--text-2); stroke-width: 2; fill: none; transition: stroke 300ms ease; }
+.dark-toggle .icon-sun { display: none; }
+.dark-toggle .icon-moon { display: block; }
+.dark .dark-toggle .icon-sun { display: block; }
+.dark .dark-toggle .icon-moon { display: none; }
+
+/* WRAP */
+.wrap { max-width: 860px; margin: 0 auto; }
+
+/* HERO BANNER */
+.hero {
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-glass);
+  border-radius: var(--radius-2xl);
+  padding: 3rem 3rem 2.75rem;
+  margin-bottom: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50px; left: 50%; transform: translateX(-50%);
+  width: 420px; height: 160px;
+  background: radial-gradient(ellipse, rgba(139,92,246,0.13) 0%, transparent 70%);
+  pointer-events: none;
+}
+.dark .hero { background: rgba(255,255,255,0.04); }
+
+.hero-icon {
+  width: 72px; height: 72px; border-radius: 18px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #4f46e5 100%);
+  box-shadow: 0 10px 28px rgba(99,102,241,0.32), inset 0 1px 0 rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.5rem;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.hero-icon:hover { transform: scale(1.08); box-shadow: 0 16px 36px rgba(99,102,241,0.42), inset 0 1px 0 rgba(255,255,255,0.2); }
+.hero-icon svg { width: 32px; height: 32px; stroke: white; stroke-width: 1.75; fill: none; }
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--text); color: var(--bg);
+  font-size: 0.68rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.3rem 0.75rem; border-radius: 999px; margin-bottom: 1.1rem;
+}
+.dark .hero-tag { background: rgba(255,255,255,0.12); color: var(--text-2); }
+
+.hero h1 {
+  font-size: 2.6rem; font-weight: 600; letter-spacing: -0.035em;
+  margin-bottom: 0.6rem; line-height: 1.15;
+}
+.gradient-text {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero p {
+  color: var(--text-2); font-size: 1rem; font-weight: 300; max-width: 500px;
+  line-height: 1.7; margin: 0 auto 0.25rem;
+}
+.hero p strong { font-weight: 600; color: var(--green-text); }
+
+/* CARDS GRID */
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 640px) {
+  .links-grid { grid-template-columns: 1fr; }
+  .hero { padding: 2.25rem 1.5rem 2rem; }
+  .hero h1 { font-size: 2rem; }
+}
+@media (max-width: 900px) and (min-width: 641px) {
+  .links-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* LINK CARD */
+.link-card {
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-glass);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem 1.5rem 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0;
+  transition: transform 250ms ease, box-shadow 250ms ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.link-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  opacity: 0;
+  transition: opacity 250ms ease;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+.link-card:hover {
+  transform: scale(1.02) translateY(-2px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.4);
+}
+.link-card:hover::before { opacity: 1; }
+.dark .link-card:hover {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.card-editor::before { background: linear-gradient(90deg, #8b5cf6, #6366f1); }
+.card-packager::before { background: linear-gradient(90deg, #22c55e, #16a34a); }
+.card-docs::before { background: linear-gradient(90deg, #6366f1, #4f46e5); }
+
+.link-card-icon {
+  width: 46px; height: 46px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem; flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(99,102,241,0.22), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.icon-editor { background: linear-gradient(135deg, #8b5cf6, #6366f1, #4f46e5); }
+.icon-packager { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.icon-docs { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+.link-card-icon svg { width: 20px; height: 20px; stroke: white; stroke-width: 1.75; fill: none; }
+
+.link-card-label {
+  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.09em;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 0.35rem;
+}
+.link-card-title {
+  font-size: 1.05rem; font-weight: 600; letter-spacing: -0.015em;
+  margin-bottom: 0.45rem; color: var(--text);
+}
+.link-card-desc {
+  font-size: 0.82rem; font-weight: 300; color: var(--text-2);
+  line-height: 1.65; flex: 1; margin-bottom: 1.25rem;
+}
+.link-card-cta {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  border-radius: 999px; padding: 0.55rem 1.1rem;
+  font-size: 0.8rem; font-weight: 500;
+  border: 1px solid transparent; white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.link-card-cta svg { width: 13px; height: 13px; stroke-width: 2; stroke: currentColor; fill: none; flex-shrink: 0; }
+.cta-purple { background: #111; color: #fff; border-color: #111; }
+.dark .cta-purple { background: #f0f2f8; color: #0e0f14; border-color: #f0f2f8; }
+.cta-green { background: rgba(34,197,94,0.11); color: #15803d; border-color: rgba(34,197,94,0.22); }
+.dark .cta-green { color: #4ade80; border-color: rgba(74,222,128,0.22); background: rgba(34,197,94,0.1); }
+.cta-indigo { background: rgba(99,102,241,0.1); color: #3730a3; border-color: rgba(99,102,241,0.22); }
+.dark .cta-indigo { color: #a5b4fc; border-color: rgba(165,180,252,0.22); background: rgba(99,102,241,0.12); }
+.link-card:hover .link-card-cta { transform: scale(1.04); }
+
+/* FOOTER NOTE */
+.footer-note {
+  text-align: center;
+  font-size: 0.78rem; font-weight: 300; color: var(--text-3);
+  margin-top: 2rem;
+}
+.footer-note a { color: var(--text-2); text-decoration: none; border-bottom: 1px solid var(--border-strong); transition: color 150ms ease; }
+.footer-note a:hover { color: var(--text); }
+
+/* FADE-IN ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-in { animation: fadeUp 0.45s cubic-bezier(0.25, 0.1, 0.25, 1) both; }
+.delay-1 { animation-delay: 80ms; }
+.delay-2 { animation-delay: 160ms; }
+.delay-3 { animation-delay: 240ms; }
+.delay-4 { animation-delay: 320ms; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <div class="nav-brand-wrap">
+      <div class="nav-brand-icon">
+        <svg data-feather="zap" style="width:15px;height:15px;stroke:white;stroke-width:1.75;fill:none"></svg>
+      </div>
+      <span class="nav-brand-text">Momentum</span>
+    </div>
+    <div class="nav-right">
+      <button class="dark-toggle" id="dark-toggle" title="Toggle dark mode" onclick="toggleDark()">
+        <svg class="icon-moon" data-feather="moon" style="width:15px;height:15px;stroke:var(--text-2);fill:none;stroke-width:2"></svg>
+        <svg class="icon-sun" data-feather="sun" style="width:15px;height:15px;stroke:var(--text-2);fill:none;stroke-width:2"></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero animate-in">
+    <div class="hero-icon">
+      <svg data-feather="zap" style="width:32px;height:32px;stroke:white;stroke-width:1.75;fill:none"></svg>
+    </div>
+    <div class="hero-tag">
+      <svg data-feather="git-branch" style="width:10px;height:10px;stroke:currentColor;stroke-width:2.5;fill:none"></svg>
+      Scratch Mod
+    </div>
+    <h1><span class="gradient-text">Momentum</span></h1>
+    <p>A powerful Scratch modification built on <strong>TurboWarp</strong>. Choose where you want to go.</p>
+  </div>
+
+  <!-- LINK CARDS -->
+  <div class="links-grid">
+
+    <!-- Scratch Editor -->
+    <a class="link-card card-editor animate-in delay-1" href="#" target="_blank" rel="noopener">
+      <div class="link-card-icon icon-editor">
+        <svg data-feather="code" style="width:20px;height:20px;stroke:white;stroke-width:1.75;fill:none"></svg>
+      </div>
+      <div class="link-card-label">Create</div>
+      <div class="link-card-title">Scratch Editor</div>
+      <div class="link-card-desc">Open the Momentum editor and start building projects with all the mod's custom blocks and features.</div>
+      <span class="link-card-cta cta-purple">
+        <svg data-feather="external-link" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"></svg>
+        Open Editor
+      </span>
+    </a>
+
+    <!-- Packager -->
+    <a class="link-card card-packager animate-in delay-2" href="#" target="_blank" rel="noopener">
+      <div class="link-card-icon icon-packager">
+        <svg data-feather="package" style="width:20px;height:20px;stroke:white;stroke-width:1.75;fill:none"></svg>
+      </div>
+      <div class="link-card-label">Publish</div>
+      <div class="link-card-title">Packager</div>
+      <div class="link-card-desc">Export your Momentum project as a standalone app or web page ready to share with anyone.</div>
+      <span class="link-card-cta cta-green">
+        <svg data-feather="download" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"></svg>
+        Open Packager
+      </span>
+    </a>
+
+    <!-- Turbowarp Docs -->
+    <a class="link-card card-docs animate-in delay-3" href="#" target="_blank" rel="noopener">
+      <div class="link-card-icon icon-docs">
+        <svg data-feather="book-open" style="width:20px;height:20px;stroke:white;stroke-width:1.75;fill:none"></svg>
+      </div>
+      <div class="link-card-label">Learn</div>
+      <div class="link-card-title">TurboWarp Docs</div>
+      <div class="link-card-desc">Browse the official TurboWarp documentation to learn about extensions, compiler settings, and more.</div>
+      <span class="link-card-cta cta-indigo">
+        <svg data-feather="arrow-right" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"></svg>
+        Read Docs
+      </span>
+    </a>
+
+  </div>
+
+  <p class="footer-note animate-in delay-4">
+    Momentum is a community Scratch mod based on <a href="https://turbowarp.org" target="_blank" rel="noopener">TurboWarp</a>.
+    Not affiliated with the Scratch Team.
+  </p>
+
+</div>
+
+<script>
+function toggleDark() {
+  document.body.classList.toggle('dark');
+  if (window.feather) feather.replace({ 'stroke-width': 1.75 });
+}
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.feather) feather.replace({ 'stroke-width': 1.75 });
+});
+</script>
+</body>
+</html>
